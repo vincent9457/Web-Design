@@ -7,7 +7,7 @@
 
 頁面中包含一輛前方起火的火車，象徵系統當機，對應台鐵系統發生的擁擠與延誤問題。動態火焰使得當機畫面更生動，營造系統過熱的視覺印象。「火車誤點中，請稍後再試！」以台鐵常見的誤點概念來比喻系統延遲，讓使用者能夠直覺理解。
 ### 成果
-https://vincent9457.github.io/Waiting-page/
+https://vincent9457.github.io/Web-Design-HW1/
 
 ## HW2 前端效能調校
 ![](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
@@ -21,7 +21,7 @@ https://vincent9457.github.io/Waiting-page/
 https://www.free-css.com/free-css-templates
 
 ### 成果
-https://vincent9457.github.io/Web-lighthouse-after/
+https://vincent9457.github.io/Web-Design-HW2-after/
 
 ## HW3 釣魚網站
 訓練復刻網站的能力。
@@ -32,7 +32,7 @@ https://vincent9457.github.io/Web-lighthouse-after/
 https://www.netflix.com/tw/
 
 ### 成果
-https://vincent9457.github.io/Scam_website/
+https://vincent9457.github.io/Web-Design-HW3/
 
 ## HW4 歷史價格查詢網站
 ![](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white) | ![](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white) | ![](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white) | ![](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white) | ![](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
