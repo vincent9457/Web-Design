@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>國營臺灣鐵路股份有限公司_線上訂票</title>
+
+    <link rel="stylesheet" href="https://tip-tr4cdn.cdn.hinet.net/tra-tip-web/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://tip-tr4cdn.cdn.hinet.net/tra-tip-web/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://tip-tr4cdn.cdn.hinet.net/tra-tip-web/static/css/tip_normal.css">
+    <link rel="stylesheet" href="https://tip-tr4cdn.cdn.hinet.net/tra-tip-web/static/css/tip_default.css">
+
+    <script src="https://tip-tr4cdn.cdn.hinet.net/tra-tip-web/static/js/jquery.min.js"></script>
+    <script src="https://tip-tr4cdn.cdn.hinet.net/tra-tip-web/static/js/bootstrap.min.js"></script>
+    <style>
+        .title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #333;
+            text-align: center;
+        }
+        .subtitle {
+            font-size: 32px;
+            font-weight: 600;
+            color: #666;
+            text-align: center;
+        }
+        .container1 {
+            width: 1000px;
+            margin: 50px auto;
+            position: relative;
+        }
+        .train-img {
+            width: 90%;
+            height: auto;
+            display: block;
+        }
+        .fire-img {
+            position: absolute;
+            top: 40%;
+            left: 3%;
+            width: 250px;
+            height: auto;
+            pointer-events: none;
+        }
+        .travel-img {
+            position: absolute;
+            width: 300px;
+            left: 500px;
+            top: 350px;
+            border: none;
+            outline: none;
+        }
+        .driver-img {
+            position: absolute;
+            width: 300px;
+            left: 300px;
+            top: 370px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <a href="#content" id="gotocenter" title="跳到主要內容" class="sr-only sr-only-focusable">跳到主要內容</a>
+    <div class="container">
+        <!--快速鍵-->
+        <a href="#U" id="AU" name="U" title="上方功能區塊" accesskey="U">:::</a>
+        <!--logo 區-->
+        <div class="logo col-xs-6">
+            <h1>
+                <a href="https://www.railway.gov.tw/tra-tip-web/tip" title="國營臺灣鐵路股份有限公司">
+                    <img src="imgs/TRC_logo_1.png" alt="國營臺灣鐵路股份有限公司LOGO">
+                </a>
+            </h1>
+        </div>
+        <!-- 右側選單 -->
+        <div class="navtop col-xs-6">
+            <li>
+                <a href="https://www.railway.gov.tw/tra-tip-web/tip/tip00F/tipF15/view" title="網站導覽">網站導覽</a>
+            </li>
+            <li class="login">
+                <a href="https://www.railway.gov.tw/tra-tip-web/tip/tip008/tip811/memberLogin" title="登入" alt="登入">登入</a>
+                <a href="https://www.railway.gov.tw/tra-tip-web/tip/tip008/tip821/createPerson" title="註冊" alt="註冊">註冊</a>
+
+            </li>
+
+
+            <!--語言切換 尚未上線 先註解-->
+            <li class="language-selector">
+                <div class="dropdown">
+                    <a id="dLabe1" class="langon" href="/tra-tip-web/tip?lang=ZH_TW" data-toggle="dropdown" role="button" title="Language">Language</a>
+                    <ul class="dropdown-menu" aria-labelledby="dLabe1">
+
+                        <li>
+                            <a href="https://www.railway.gov.tw/tra-tip-web/tip?lang=ZH_TW" title="繁體中文">繁體中文</a>
+                        </li>
+
+
+                        <li>
+                            <a href="https://tip.railway.gov.tw/tra-tip-web/tip?lang=ZH_CN" title="简体中文">简体中文</a>
+                        </li>
+                        <li>
+                            <a href="https://tip.railway.gov.tw/tra-tip-web/tip?lang=EN_US" title="English">English</a>
+                        </li>
+                        <li>
+                            <a href="https://tip.railway.gov.tw/tra-tip-web/tip?lang=JA_JP" title="日本語">日本語</a>
+                        </li>
+                        <li>
+                            <a href="https://tip.railway.gov.tw/tra-tip-web/tip?lang=KO_KA" title="한국어">한국어</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </li>
+        </div>
+    </div>
+
+    <div class="container">
+        <noscript>
+            您的瀏覽器不支援JavaScript功能，若部份網頁功能無法正常使用時，請開啟瀏覽器JavaScript狀態<br>友善列印 :<br>請利用鍵盤按住Ctrl + P開啟列印功能<br>字級設定 :<br>IE6請利用鍵盤按住ALT鍵 + V → X → (G)最大(L)較大(M)中(S)較小(A)小，來選擇適合您的文字大小,<br>而IE7或Firefox瀏覽器則可利用鍵盤 Ctrl + (+)放大 (-)縮小來改變字型大小。
+        </noscript>
+    </div>
+</div>
+<div class="container1">
+    <div class="title">系統忙碌中</div>
+    <div class="subtitle">火車誤點中，請稍後再試！</div>
+    <div class="train-container">
+        <img src="imgs/fire1.png" style="display: none;">
+        <img src="imgs/fire2.png" style="display: none;">
+        <img src="imgs/fire3.png" style="display: none;">
+        <img src="imgs/fire4.png" style="display: none;">
+        <img src="imgs/fire5.png" style="display: none;">
+        <img class="train-img" src="imgs/train.png">
+        <img class="fire-img" id="fire" src="imgs/fire1.png">
+        <img class="driver-img" src="imgs/driver1.png">
+        <img class="travel-img" src="imgs/traveler.png">
+    </div>
+</div>
+<script>
+    // 火焰動畫
+    // const fireImages = [
+    //     "imgs/fire1.png",
+    //     "imgs/fire2.png",
+    //     "imgs/fire3.png",
+    //     "imgs/fire4.png",
+    //     "imgs/fire5.png"
+    // ];
+    //
+    // let fireIndex = 0;
+    // const fireElement = document.getElementById("fire");
+    // const firstTimeShown = new Array(fireImages.length).fill(false); // 記錄每張圖片是否已經顯示過
+    //
+    // const changeFire = () => {
+    //     fireIndex = (fireIndex + 1) % fireImages.length;
+    //     fireElement.src = fireImages[fireIndex] + "?t=" + new Date().getTime(); // 加時間戳記，避免瀏覽器快取
+    //     console.log("火焰圖片變更:", fireElement.src);
+    //
+    //     // 🔹 如果是第一次顯示，等待 500ms，之後就變 100ms
+    //     let delay = firstTimeShown[fireIndex] ? 100 : 1000;
+    //     firstTimeShown[fireIndex] = true; // 標記為已顯示過
+    //
+    //     setTimeout(changeFire, delay); // 遞迴呼叫，控制不同時間間隔
+    // };
+    //
+    // // 🔥 啟動動畫
+    // changeFire();
+
+    const fireImages = [
+        "imgs/fire1.png",
+        "imgs/fire2.png",
+        "imgs/fire3.png",
+        "imgs/fire4.png",
+        "imgs/fire5.png"
+    ];
+
+    let fireIndex = 0;
+    const fireElement = document.getElementById("fire");
+
+    setInterval(() => {
+        fireIndex = (fireIndex + 1) % fireImages.length;
+        fireElement.src = fireImages[fireIndex];
+    }, 100);
+
+</script>
+</body>
+</html>

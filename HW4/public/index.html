@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>雞肉&雞蛋價格查詢系統</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: #f6f8fa;
+      font-family: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;
+    }
+    .header-title {
+      color: #22223b;
+      font-size: 2.15em;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .centered-header {
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 36px;
+      margin-bottom: 36px;
+    }
+    .main-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 32px #b5b7c633;
+      padding: 34px 40px 40px 40px;
+      max-width: 950px;
+      margin: 0 auto 30px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      transition: box-shadow 0.18s;
+    }
+    .main-card:hover {
+      box-shadow: 0 8px 48px #b5b7c677;
+    }
+    .search-row, form#searchForm {
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+    }
+    #searchResult {
+      min-width: 240px;
+      font-size: 1.1em;
+      color: #007bff;
+      margin-left: 0;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      text-align: center;
+      word-break: break-all;
+    }
+    form#searchForm {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 0;
+      justify-content: center;
+    }
+    form#searchForm label {
+      font-weight: 500;
+      color: #22223b;
+      font-size: 1.04em;
+    }
+    select {
+      border-radius: 6px;
+      border: 1px solid #cdd1ea;
+      padding: 3px 12px;
+      font-size: 1em;
+      background: #f7f7fd;
+      box-shadow: 0 1px 4px #eef1fa33;
+      outline: none;
+      transition: border 0.2s;
+    }
+    select:focus {
+      border: 1.5px solid #6c63ff;
+      background: #f2f2ff;
+    }
+    button[type="submit"] {
+      background: #6c63ff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 22px;
+      font-size: 1.05em;
+      cursor: pointer;
+      box-shadow: 0 1px 6px #bbb2;
+      transition: background 0.2s, transform 0.15s;
+      font-weight: bold;
+      margin-left: 6px;
+    }
+    button[type="submit"]:hover {
+      background: #4a47a3;
+      transform: translateY(-2px) scale(1.04);
+    }
+    #lastUpdate {
+      margin-top: -16px;
+      font-size: 1.04em;
+    }
+    /* Loading spinner */
+    #loading { display:none;text-align:center;padding:14px;font-size:1.11em;color:#5f5f5f;}
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid #b7b7f7; border-radius: 50%; border-top: 2px solid #6c63ff; animation: spin 0.9s linear infinite; margin-right: 8px;}
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    /* 錯誤訊息 */
+    #errorMsg { display:none; color:#d90429; text-align:center; font-size:1.1em; font-weight:bold; margin:10px 0;}
+    canvas, ul {
+      display: block;
+      margin: 30px auto 0 auto;
+      max-width: 800px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px #bbb3;
+      background: #fff;
+    }
+    ul#priceList { padding: 8px 24px; font-size:1.05em; color:#52525b; }
+    @media (max-width: 900px) {
+      .main-card { max-width: 98vw; padding: 18px 5vw 24px 5vw; }
+      canvas, ul { max-width: 97vw; }
+    }
+    @media (max-width: 700px) {
+      .centered-header { margin-top: 12px; margin-bottom: 16px; }
+      .main-card { padding: 12px 2vw 18px 2vw; }
+      .search-row, form#searchForm { flex-direction: column; align-items: stretch; gap: 10px;}
+      form#searchForm label { font-size: 1em;}
+      canvas { margin: 14px 0 0 0;}
+    }
+  </style>
+</head>
+<body>
+<div class="centered-header">
+  <div class="header-title">雞肉&雞蛋價格查詢</div>
+  <div id="lastUpdate" style="margin-bottom: 16px; color: #888; font-size:1em;">最近更新：載入中...</div>
+  <div class="main-card">
+    <div class="search-row">
+      <form id="searchForm">
+        <label>
+          地區:
+          <select id="q_region"></select>
+        </label>
+        <label>
+          價格類型:
+          <select id="q_type"></select>
+        </label>
+        <label>
+          日期:
+          <select id="q_yearmonth"></select>
+        </label>
+        <button type="submit">查詢</button>
+      </form>
+    </div>
+    <div id="loading"><span class="spinner"></span>資料讀取中，請稍候...</div>
+    <div id="errorMsg"></div>
+    <div id="searchResult"></div>
+    <canvas id="myChart" width="800" height="400"></canvas>
+    <ul id="priceList"></ul>
+  </div>
+</div>
+
+<script>
+  let allData = [];
+  let yearMonthList = [];
+  const regionSelect = document.getElementById('q_region');
+  const yearMonthSelect = document.getElementById('q_yearmonth');
+  const typeSelect = document.getElementById('q_type');
+  const searchResultDiv = document.getElementById('searchResult');
+
+  function showLoading(show=true) {
+    document.getElementById('loading').style.display = show ? '' : 'none';
+  }
+  function showError(msg) {
+    const err = document.getElementById('errorMsg');
+    err.textContent = msg;
+    err.style.display = '';
+    setTimeout(()=>{ err.style.display = 'none'; }, 3000);
+  }
+
+  // 1. 自動產生地區選單
+  function updateRegionOptions() {
+    const regionSet = new Set(allData.map(row => row.region));
+    const regionList = Array.from(regionSet);
+    if (regionList.length === 0) {
+      regionSelect.innerHTML = '<option value="">無資料</option>';
+      regionSelect.disabled = true;
+    } else {
+      regionSelect.innerHTML = regionList.map(r => `<option value="${r}">${r}</option>`).join('');
+      regionSelect.disabled = false;
+    }
+  }
+  // 2. 自動產生 type 選單（依據地區）
+  function updateTypeOptions() {
+    const region = regionSelect.value;
+    const typeSet = new Set(allData.filter(row => row.region === region).map(row => row.type));
+    const typeList = Array.from(typeSet);
+    if (typeList.length === 0) {
+      typeSelect.innerHTML = '<option value="">無資料</option>';
+      typeSelect.disabled = true;
+    } else {
+      typeSelect.innerHTML = typeList.map(tp => `<option value="${tp}">${tp}</option>`).join('');
+      typeSelect.disabled = false;
+    }
+  }
+  // 3. 自動產生年月選單（依據地區、type）
+  function updateYearMonthOptions() {
+    const prevYm = yearMonthSelect.value;
+    const region = regionSelect.value;
+    const type = typeSelect.value;
+    const regionTypeData = allData.filter(row => row.region === region && row.type === type);
+    const ymSet = new Set(regionTypeData.map(row => row.date && row.date.slice(0, 7)));
+    yearMonthList = Array.from(ymSet).filter(Boolean).sort().reverse();
+    if (yearMonthList.length === 0) {
+      yearMonthSelect.innerHTML = '<option>無資料</option>';
+      yearMonthSelect.disabled = true;
+    } else {
+      yearMonthSelect.innerHTML = yearMonthList.map(ym => `<option value="${ym}">${ym}</option>`).join('');
+      yearMonthSelect.disabled = false;
+      if (yearMonthList.includes(prevYm)) {
+        yearMonthSelect.value = prevYm;
+      } else {
+        yearMonthSelect.value = yearMonthList[0];
+      }
+    }
+    searchResultDiv.textContent = "";
+  }
+  // 三個選單彼此連動
+  regionSelect.addEventListener('change', () => {
+    updateTypeOptions();
+    updateYearMonthOptions();
+  });
+  typeSelect.addEventListener('change', updateYearMonthOptions);
+
+  // 載入資料與初始化所有選單
+  async function loadAllData() {
+    showLoading(true);
+    try {
+      allData = await fetch('http://localhost:3000/api/prices').then(res => res.json());
+      updateRegionOptions();
+      updateTypeOptions();
+      updateYearMonthOptions();
+      if (allData.length === 0) {
+        showError('目前沒有任何可查詢的價格資料');
+      }
+    } catch(e) {
+      showError('載入資料失敗，請稍後再試！');
+    }
+    showLoading(false);
+  }
+
+  async function showLastUpdate() {
+    try {
+      const res = await fetch('http://localhost:3000/api/last-update');
+      const data = await res.json();
+      document.getElementById('lastUpdate').textContent = "最近更新：" +
+              (data.last_update ? new Date(data.last_update).toLocaleString() : "無資料");
+    } catch(e) {
+      document.getElementById('lastUpdate').textContent = "最近更新：查詢失敗";
+    }
+  }
+
+  // 查詢邏輯
+  document.getElementById('searchForm').onsubmit = function(e) {
+    e.preventDefault();
+    const region = regionSelect.value;
+    const type = typeSelect.value;
+    const yearmonth = yearMonthSelect.value;
+    if (!yearMonthList.includes(yearmonth)) {
+      showError('查無此月份的資料');
+      document.getElementById('priceList').innerHTML = '<li>查無資料</li>';
+      searchResultDiv.textContent = "";
+      drawChart([]);
+      return;
+    }
+    const filtered = allData.filter(row =>
+            row.region === region &&
+            row.type === type &&
+            row.date &&
+            row.date.startsWith(yearmonth)
+    );
+    if (filtered.length) {
+      // 算本月平均
+      const avg = filtered.reduce((sum, r) => sum + r.price, 0) / filtered.length;
+      const last = filtered[filtered.length - 1];
+      searchResultDiv.textContent =
+              `${last.region}  ${last.type}  ${yearmonth} 平均每台斤：$${avg.toFixed(2)} 元\n` ;
+    } else {
+      searchResultDiv.textContent = "";
+      showError('查無符合條件的資料');
+    }
+
+    const selectedYear = yearmonth.slice(0, 4);
+    drawYearlyChart(region, type, selectedYear, yearmonth);
+  };
+
+  let myChart = null;
+  function drawYearlyChart(region, type, year, selectedYearMonth) {
+    const months = [...Array(12).keys()].map(m => (m + 1).toString().padStart(2, '0'));
+    const monthLabels = months.map(m => `${year}-${m}`);
+    const monthAvgPrices = months.map(m => {
+      const ym = `${year}-${m}`;
+      const monthRows = allData.filter(row =>
+              row.region === region &&
+              row.type === type &&
+              row.date &&
+              row.date.startsWith(ym)
+      );
+      if (monthRows.length === 0) return null;
+      const avg = monthRows.reduce((sum, r) => sum + r.price, 0) / monthRows.length;
+      return parseFloat(avg.toFixed(2));
+    });
+
+    // 找出最高/最低
+    const validPrices = monthAvgPrices.filter(p => p !== null);
+    const max = Math.max(...validPrices);
+    const min = Math.min(...validPrices);
+    const maxMonth = monthLabels[monthAvgPrices.findIndex(p => p === max)];
+    const minMonth = monthLabels[monthAvgPrices.findIndex(p => p === min)];
+
+    // 計算漲跌幅（相對上月）
+    function getDelta(idx) {
+      if (idx === 0 || monthAvgPrices[idx] === null || monthAvgPrices[idx-1] === null) return null;
+      const prev = monthAvgPrices[idx-1];
+      const curr = monthAvgPrices[idx];
+      return prev === 0 ? null : (((curr - prev) / prev) * 100);
+    }
+
+    const pointBackgroundColors = months.map((m, idx) =>
+            `${year}-${m}` === selectedYearMonth ? 'red' : 'rgba(54,162,235,1)'
+    );
+    const pointRadius = months.map((m) =>
+            `${year}-${m}` === selectedYearMonth ? 7 : 4
+    );
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    if (myChart) myChart.destroy();
+    myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: monthLabels,
+        datasets: [{
+          label: `${region} ${type} ${year}每月平均價格`,
+          data: monthAvgPrices,
+          fill: false,
+          spanGaps: true,
+          borderWidth: 3,
+          pointBorderWidth: 3,
+          pointBackgroundColor: pointBackgroundColors,
+          pointRadius: pointRadius,
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: true },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const idx = context.dataIndex;
+                const val = monthAvgPrices[idx];
+                let tip = `平均價格：$${val ?? '-'} 元`;
+
+                // 漲跌幅
+                const delta = getDelta(idx);
+                if (delta !== null) {
+                  const dstr = delta > 0 ? `↑ +${delta.toFixed(2)}%` : (delta < 0 ? `↓ ${delta.toFixed(2)}%` : '持平');
+                  tip += `（較上月${dstr}）`;
+                }
+
+                // 如果是當年最高/最低
+                if (val === max) tip += `\n（今年最高：${maxMonth}）`;
+                if (val === min) tip += `\n（今年最低：${minMonth}）`;
+                return tip;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: '月份' } },
+          y: {
+            min: 0,
+            max: 70,
+            title: { display: true, text: '價格' }
+          }
+        }
+      }
+    });
+  }
+
+
+  // 初始化
+  showLastUpdate();
+  loadAllData();
+</script>
+</body>
+</html>
